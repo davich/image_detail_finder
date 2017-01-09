@@ -9,34 +9,45 @@ class ImageDetailFinder
   end
 
   def rectangle_coords_for_crop
-    point_coords = detailed_pixel_coords
-    half_square = square_size / 2
     [
-      point_coords[0] - half_square,
-      point_coords[1] - half_square,
+      square_top_left[0],
+      square_top_left[1],
       square_size,
       square_size
     ]
   end
 
   def rectangle_coords
-    point_coords = detailed_pixel_coords
-    half_square = square_size / 2
     [
-      point_coords[0] - half_square,
-      point_coords[1] - half_square,
-      point_coords[0] + half_square,
-      point_coords[1] + half_square
+      square_top_left[0],
+      square_top_left[1],
+      square_top_left[0] + square_size,
+      square_top_left[1] + square_size,
     ]
   end
 
   def image_dimensions
-    `convert #{filename} -format "%wx%h" info:`.split('x').map(&:to_i)
+    @image_dimensions ||= `convert #{filename} -format "%wx%h" info:`.split('x').map(&:to_i)
   end
 
   private
 
   attr_reader :filename
+
+  def square_top_left
+    point_coords = detailed_pixel_coords
+    half_square = square_size / 2
+    [
+      clip(point_coords[0] - half_square, image_dimensions[0] - square_size),
+      clip(point_coords[1] - half_square, image_dimensions[1] - square_size),
+    ]
+  end
+
+  def clip(x, upper_bounds)
+    return 0 if x < 0
+    return upper_bounds if x > upper_bounds
+    x
+  end
 
   def square_size
     image_dimensions.max / 10
