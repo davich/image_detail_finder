@@ -8,13 +8,20 @@ class ImageDetailFinder
     `convert #{filename} -stroke red -strokewidth 1 -fill none -draw "rectangle #{rect} " #{output_filename}`
   end
 
-  private
-
-  attr_reader :filename
+  def rectangle_coords_for_crop
+    point_coords = detailed_pixel_coords
+    half_square = square_size / 2
+    [
+      point_coords[0] - half_square,
+      point_coords[1] - half_square,
+      square_size,
+      square_size
+    ]
+  end
 
   def rectangle_coords
     point_coords = detailed_pixel_coords
-    half_square = calculate_square_size / 2
+    half_square = square_size / 2
     [
       point_coords[0] - half_square,
       point_coords[1] - half_square,
@@ -23,8 +30,16 @@ class ImageDetailFinder
     ]
   end
 
-  def calculate_square_size
-    `convert #{filename} -format "%wx%h" info:`.split('x').map(&:to_i).max / 10
+  def image_dimensions
+    `convert #{filename} -format "%wx%h" info:`.split('x').map(&:to_i)
+  end
+
+  private
+
+  attr_reader :filename
+
+  def square_size
+    image_dimensions.max / 10
   end
 
   def detailed_pixel_coords
