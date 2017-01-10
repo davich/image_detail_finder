@@ -1,6 +1,5 @@
 require_relative 'image_detail_finder'
 
-
 class Redbubble
   def initialize(page_url)
     @page_url = page_url

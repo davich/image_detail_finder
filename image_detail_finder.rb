@@ -5,7 +5,12 @@ class ImageDetailFinder
 
   def write_out_with_bounding_box(output_filename="out-#{filename}")
     rect = "%d,%d %d,%d" % rectangle_coords
-    `convert #{filename} -stroke red -strokewidth 1 -fill none -draw "rectangle #{rect} " #{output_filename}`
+    `convert #{filename} -stroke red -strokewidth 2 -fill none -draw "rectangle #{rect} " #{output_filename}`
+  end
+
+  def write_out_cropped_image(output_filename="cropped_#{filename}")
+    rect = "%dx%d+%d+%d" % [square_size, square_size, square_top_left[0], square_top_left[1]]
+    `convert -crop #{rect} #{filename} #{output_filename}`
   end
 
   def rectangle_coords_for_crop
@@ -35,12 +40,14 @@ class ImageDetailFinder
   attr_reader :filename
 
   def square_top_left
-    point_coords = detailed_pixel_coords
-    half_square = square_size / 2
-    [
-      clip(point_coords[0] - half_square, image_dimensions[0] - square_size),
-      clip(point_coords[1] - half_square, image_dimensions[1] - square_size),
-    ]
+    @square_top_left ||= begin
+      point_coords = detailed_pixel_coords
+      half_square = square_size / 2
+      [
+        clip(point_coords[0] - half_square, image_dimensions[0] - square_size),
+        clip(point_coords[1] - half_square, image_dimensions[1] - square_size),
+      ]
+    end
   end
 
   def clip(x, upper_bounds)
@@ -50,7 +57,7 @@ class ImageDetailFinder
   end
 
   def square_size
-    image_dimensions.max / 10
+    image_dimensions.max / 5
   end
 
   def detailed_pixel_coords
@@ -62,4 +69,6 @@ class ImageDetailFinder
   end
 end
 
-# ImageDetailFinder.new(ARGV[0]).write_out_with_bounding_box
+# idf = ImageDetailFinder.new(ARGV[0])
+# idf.write_out_with_bounding_box
+# idf.write_out_cropped_image
