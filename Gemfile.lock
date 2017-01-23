@@ -1,0 +1,25 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    api-auth (1.5.0)
+    byebug (9.0.6)
+    httpi (2.4.2)
+      rack
+      socksify
+    mini_portile2 (2.1.0)
+    nokogiri (1.7.0.1)
+      mini_portile2 (~> 2.1.0)
+    rack (2.0.1)
+    socksify (1.7.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  api-auth (~> 1.0)
+  byebug
+  httpi
+  nokogiri
+
+BUNDLED WITH
+   1.14.2

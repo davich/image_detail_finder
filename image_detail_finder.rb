@@ -15,10 +15,10 @@ class ImageDetailFinder
 
   def rectangle_coords_for_crop
     [
-      square_top_left[0],
-      square_top_left[1],
       square_size,
-      square_size
+      square_size,
+      square_top_left[0],
+      square_top_left[1]
     ]
   end
 
